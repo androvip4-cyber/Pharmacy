@@ -1,0 +1,104 @@
+{
+    "3": {
+        "name": "Vitamin C",
+        "image": "uploads/3_1000059783.jpg",
+        "batches": [
+            {
+                "price": 50,
+                "purchase_price": 30,
+                "quantity": 8,
+                "expiry_date": "2026-06-01"
+            }
+        ]
+    },
+    "6": {
+        "name": "Adol 500mg",
+        "image": "images/adol.png",
+        "batches": [
+            {
+                "price": 75,
+                "purchase_price": 50,
+                "quantity": 7,
+                "expiry_date": "2026-02-01"
+            },
+            {
+                "price": 75,
+                "purchase_price": 50,
+                "quantity": 10,
+                "expiry_date": "2027-10-10"
+            }
+        ]
+    },
+    "7": {
+        "name": "Augmentin 625mg",
+        "image": "images/augmentin.png",
+        "batches": [
+            {
+                "price": 120,
+                "purchase_price": 85,
+                "quantity": 5,
+                "expiry_date": "2026-11-01"
+            },
+            {
+                "price": 120.0,
+                "purchase_price": 85.0,
+                "quantity": 30,
+                "expiry_date": "2027-04-15"
+            }
+        ]
+    },
+    "8": {
+        "name": "Panadol Extra",
+        "image": "images/panadol.png",
+        "batches": [
+            {
+                "price": 55,
+                "purchase_price": 35,
+                "quantity": 14,
+                "expiry_date": "2026-06-30"
+            },
+            {
+                "price": 0,
+                "purchase_price": 0,
+                "quantity": 0,
+                "expiry_date": ""
+            }
+        ]
+    },
+    "9": {
+        "name": "Larypro Lozenges",
+        "image": "images/larypro.png",
+        "batches": [
+            {
+                "price": 25,
+                "purchase_price": 15,
+                "quantity": 14,
+                "expiry_date": "2025-12-31"
+            }
+        ]
+    },
+    "11": {
+        "name": "Oplex-N",
+        "image": "uploads/11_1000063481.png",
+        "batches": [
+            {
+                "price": 80,
+                "purchase_price": 55,
+                "quantity": 9,
+                "expiry_date": "2025-08-01"
+            }
+        ]
+    },
+    "12": {
+        "name": "ارض ديناصورية الشكل",
+        "image": "uploads/12_8_1000059773.jpg",
+        "batches": [
+            {
+                "price": 10000000.0,
+                "purchase_price": 900000.0,
+                "quantity": 900,
+                "expiry_date": ""
+            }
+        ]
+    }
+}
