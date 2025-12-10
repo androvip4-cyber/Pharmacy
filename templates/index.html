@@ -514,7 +514,9 @@
          data-stock="{{ ns.total_qty }}"
          data-exp="{{ ns.nearest_expiry }}"
          data-expired="false">
-        <img src="{{ url_for('static', filename=p.image) }}" alt="{{ p.name }}">
+        {% if p.image %}
+            <img src="{{ url_for('static', filename=p.image) }}" alt="{{ p.name }}">
+        {% endif %}
         <h3>{{ p.name }}</h3>
         <div class="price-row">
             <span class="price">{{ ns.display_price }} جنيه</span>
