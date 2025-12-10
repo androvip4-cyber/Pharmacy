@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتمام الطلب</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        :root{
+            --bg:#f5f7fa; --card:#fff; --ink:#0f172a; --muted:#6b7280;
+            --primary:#0f9d58; --primary-2:#0b7d46; --accent:#1565c0;
+            --shadow:0 10px 28px rgba(15,23,42,0.12); --radius:16px;
+        }
+        *{box-sizing:border-box;}
+        body{margin:0; font-family:"Cairo",sans-serif; background:var(--bg); color:var(--ink);}
+        .wrap{max-width:960px; margin:32px auto; padding:0 16px;}
+        .layout{display:grid; grid-template-columns:1.2fr 0.9fr; gap:18px;}
+        .card{background:var(--card); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);}
+        .order-form{order:1;}
+        .cart-summary{order:2;}
+        h1{margin:0 0 10px; color:var(--primary);}
+        .muted{color:var(--muted);}
+        ul{padding-right:18px;}
+        .summary-row{display:flex; justify-content:space-between; margin:6px 0; font-weight:700;}
+        .total{font-size:1.2rem; color:var(--primary);}
+        .field{display:flex; flex-direction:column; gap:6px; margin-bottom:12px;}
+        input, textarea, select{
+            padding:12px; border-radius:12px; border:1px solid #e5e7eb; font-family:inherit;
+        }
+        button{
+            width:100%; padding:12px; border:none; border-radius:12px;
+            background:linear-gradient(90deg,var(--primary),var(--primary-2));
+            color:#fff; font-weight:800; cursor:pointer; box-shadow:0 10px 24px rgba(15,157,88,0.2);
+        }
+        .success{text-align:center;}
+        .success h1{color:#0f9d58;}
+        .success a{display:inline-block; margin-top:12px; padding:10px 16px; border-radius:10px; background:var(--primary); color:#fff; text-decoration:none; font-weight:700;}
+        .pill{display:inline-block; padding:8px 12px; border-radius:999px; background:#e8f5e9; color:var(--primary); font-weight:700;}
+        .empty{padding:32px 0; text-align:center;}
+        @media(max-width:880px){
+            .layout{grid-template-columns:1fr;}
+            .order-form{order:2;}
+            .cart-summary{order:1;}
+        }
+        @media(max-width:480px){
+            .wrap{ margin: 16px auto; padding: 0 12px; }
+            .card{ padding: 14px; }
+            h1{ font-size: 1.3rem; }
+            .field{ margin-bottom: 10px; }
+            input, textarea, select{ padding: 10px; font-size: 1rem; }
+            button{ padding: 12px; font-size: 1rem; }
+            .summary-row{ font-size: 0.95rem; }
+            .total{ font-size: 1.1rem; }
+            footer{ padding: 20px 12px; margin-top: 24px; }
+            footer h3{ font-size: 1rem; }
+            footer p{ font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        {% if order_id %}
+        <div class="card success">
+            <h1>✅ تم إرسال طلبك بنجاح!</h1>
+            <p>رقم الطلب: <strong>{{ order_id }}</strong></p>
+            <a href="/">العودة إلى الصفحة الرئيسية</a>
+            <br><br>
+            <a href="/track/{{ order_id }}">تتبع حالة الطلب</a>
+        </div>
+        {% else %}
+
+        {% if message %}
+        <div class="card" style="background:#fee; color:#c62828; border:1px solid #ffcdd2; margin-bottom:16px;">
+            <p style="margin:0; font-weight:700;">{{ message }}</p>
+        </div>
+        {% endif %}
+
+        <div class="layout" id="checkout-layout">
+            <div class="card order-form">
+                <h1>🧾 إتمام الطلب</h1>
+                <p class="muted">راجع طلبك ثم أدخل بيانات التواصل.</p>
+                <div class="field">
+                    <label>الاسم الكامل</label>
+                    <input type="text" name="name" id="name-input" placeholder="اكتب اسمك" required form="checkout-form">
+                </div>
+                <div class="field">
+                    <label>رقم الهاتف</label>
+                    <input type="text" name="phone" id="phone-input" placeholder="مثال: 01012345678" required form="checkout-form">
+                </div>
+                <div class="field">
+                    <label>ملاحظات (اختياري)</label>
+                    <textarea name="notes" id="notes-input" rows="3" placeholder="مثال: تسليم مسائي، أو ملاحظات للصيدلي" form="checkout-form"></textarea>
+                </div>
+                <div class="field">
+                    <label>طريقة الدفع</label>
+                    <select name="payment" id="payment-input" form="checkout-form">
+                        <option value="cod">دفع عند الاستلام</option>
+                        <option value="card">بطاقة (قريباً)</option>
+                    </select>
+                </div>
+                <form id="checkout-form" action="/checkout" method="post" onsubmit="attachCart()">
+                    <input type="hidden" name="cart" id="cart-data">
+                    <button type="submit">تأكيد الطلب</button>
+                </form>
+            </div>
+
+            <div class="card cart-summary" id="summary-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <h2 style="margin:0;">مراجعة السلة</h2>
+                    <span class="pill" id="items-count">0 منتج</span>
+                </div>
+                <div id="summary-list"></div>
+                <div class="summary-row total">
+                    <span>الإجمالي:</span>
+                    <span id="total-price">0</span>
+                </div>
+                <div class="muted" style="font-size:0.9rem;">الدفع عند الاستلام. تأكد من رقم الهاتف لتأكيد الطلب.</div>
+                
+                {% if pharmacy %}
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                    <h3 style="margin: 0 0 12px; font-size: 1rem; color: var(--primary);">معلومات الصيدلية</h3>
+                    {% if pharmacy.get('name') %}
+                    <p style="margin: 6px 0; font-weight: 700;">{{ pharmacy.name }}</p>
+                    {% endif %}
+                    {% if pharmacy.get('address') %}
+                    <p style="margin: 6px 0; color: var(--muted); font-size: 0.9rem;">📍 {{ pharmacy.address }}</p>
+                    {% endif %}
+                    {% if pharmacy.get('phone') %}
+                    <p style="margin: 6px 0; color: var(--muted); font-size: 0.9rem;">📞 <a href="tel:{{ pharmacy.phone }}" style="color: var(--primary); text-decoration: none;">{{ pharmacy.phone }}</a></p>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div id="empty-cart" class="card empty" style="display:none;">
+            <h2>🛒 السلة فارغة</h2>
+            <p class="muted">أضف منتجات من الصفحة الرئيسية ثم عد لإتمام الطلب.</p>
+            <a href="/" class="pill" style="text-decoration:none;">العودة للمتجر</a>
+        </div>
+        {% endif %}
+    </div>
+
+<script>
+function loadCheckoutProducts() {
+    const cart = JSON.parse(localStorage.getItem("checkout_cart") || "{}");
+    const layout = document.getElementById("checkout-layout");
+    const emptyBox = document.getElementById("empty-cart");
+    const summaryList = document.getElementById("summary-list");
+    const totalEl = document.getElementById("total-price");
+    const itemsCountEl = document.getElementById("items-count");
+
+    if (Object.keys(cart).length === 0) {
+        if (layout) layout.style.display = "none";
+        if (emptyBox) emptyBox.style.display = "block";
+        return;
+    }
+
+    let total = 0;
+    let count = 0;
+    summaryList.innerHTML = "";
+
+    for (const pid in cart) {
+        const item = cart[pid];
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        count += item.qty;
+        summaryList.innerHTML += `
+            <div class="summary-row">
+                <span>${item.name} × ${item.qty}</span>
+                <span>${subtotal} جنيه</span>
+            </div>
+        `;
+    }
+
+    totalEl.innerText = `${total} جنيه`;
+    itemsCountEl.innerText = `${count} منتج`;
+}
+
+function attachCart() {
+    const cart = localStorage.getItem("checkout_cart");
+    document.getElementById("cart-data").value = cart;
+    localStorage.removeItem("checkout_cart");
+    localStorage.removeItem("cart");
+}
+
+loadCheckoutProducts();
+</script>
+
+{% if pharmacy and not order_id %}
+<footer style="background: linear-gradient(135deg, #0f9d58, #0b7d46); color: #fff; padding: 24px 16px; margin-top: 32px;">
+    <div style="max-width: 960px; margin: 0 auto; text-align: center;">
+        {% if pharmacy.get('name') %}
+        <h3 style="margin: 0 0 12px; font-size: 1.1rem;">{{ pharmacy.name }}</h3>
+        {% endif %}
+        <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-top: 12px;">
+            {% if pharmacy.get('address') %}
+            <p style="margin: 0; opacity: 0.9;">📍 {{ pharmacy.address }}</p>
+            {% endif %}
+            {% if pharmacy.get('phone') %}
+            <p style="margin: 0; opacity: 0.9;">📞 <a href="tel:{{ pharmacy.phone }}" style="color: #fff; text-decoration: none;">{{ pharmacy.phone }}</a></p>
+            {% endif %}
+        </div>
+    </div>
+</footer>
+{% endif %}
+
+</body>
+</html>

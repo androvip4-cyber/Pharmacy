@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض المخزون</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        :root{
+            --bg:#f4f6fb; --card:#fff; --ink:#0f172a; --muted:#6b7280;
+            --primary:#0f9d58; --accent:#1565c0; --danger:#c62828;
+            --shadow:0 8px 24px rgba(15,23,42,0.12); --radius:14px;
+        }
+        *{box-sizing:border-box;}
+        body{margin:0; font-family:"Cairo",sans-serif; background:var(--bg); color:var(--ink);}
+        .layout{display:grid; grid-template-columns:240px 1fr; min-height:100vh;}
+        .sidebar{background:linear-gradient(180deg,#0c5131,#0f9d58); color:#fff; padding:22px 18px; display:flex; flex-direction:column; gap:16px;}
+        .nav a{color:#e0f2e9; text-decoration:none; padding:10px 12px; border-radius:10px; display:flex; gap:10px;}
+        .nav a:hover{background:rgba(255,255,255,0.1);}
+        .main{padding:20px 24px 32px;}
+        .page-head{display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; align-items:center;}
+        .pill{background:#e8f5e9; color:var(--primary); padding:6px 10px; border-radius:999px; font-weight:700;}
+        .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin:14px 0;}
+        .card{background:var(--card); border-radius:var(--radius); padding:14px; box-shadow:var(--shadow);}
+        .stat-label{color:var(--muted); font-size:0.95rem;}
+        .stat-value{font-weight:800; font-size:1.3rem;}
+        .toolbar{display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 14px;}
+        .toolbar input, .toolbar select{padding:10px 12px; border-radius:10px; border:1px solid #e5e7eb; font-family:inherit;}
+        .btn{background:linear-gradient(90deg,var(--primary),#0b7d46); color:#fff; padding:10px 14px; border:none; border-radius:10px; font-weight:700; cursor:pointer; box-shadow:0 10px 22px rgba(15,157,88,0.2);}
+        .table-wrapper{overflow-x:auto; border-radius:var(--radius); box-shadow:var(--shadow); background:var(--card);}
+        table{width:100%; border-collapse:collapse; min-width:820px;}
+        th,td{padding:12px; border-bottom:1px solid #e5e7eb; text-align:right;}
+        th{background:#0f9d58; color:#fff; position:sticky; top:0;}
+        tr:nth-child(even){background:#f9fafb;}
+        .badge{padding:6px 10px; border-radius:999px; font-weight:700; font-size:0.9rem; display:inline-block;}
+        .status-ok{background:#e6f4ea; color:#0f9d58;}
+        .status-low{background:#fff7d6; color:#a27900;}
+        .status-expire_soon{background:#ffe9d6; color:#c65a00;}
+        .status-out{background:#fdecea; color:#c62828;}
+        @media(max-width:960px){.layout{grid-template-columns:1fr;}.sidebar{flex-direction:row; flex-wrap:wrap;}}
+        @media(max-width:480px){
+            .main{ padding: 12px 16px 20px; }
+            .page-head{ margin-bottom: 12px; }
+            .page-head h2{ font-size: 1.2rem; }
+            .pill{ font-size: 0.8rem; padding: 5px 8px; }
+            .grid{ grid-template-columns: 1fr; gap: 10px; }
+            .card{ padding: 12px; }
+            .stat-value{ font-size: 1.1rem; }
+            .stat-label{ font-size: 0.85rem; }
+            .toolbar{ flex-direction: column; gap: 8px; }
+            .toolbar input, .toolbar select{ width: 100%; padding: 10px; font-size: 0.95rem; }
+            .btn{ padding: 10px 14px; font-size: 0.95rem; width: 100%; }
+            .table-wrapper{ border-radius: 10px; }
+            table{ min-width: 600px; font-size: 0.9rem; }
+            th, td{ padding: 8px 6px; }
+            th{ font-size: 0.85rem; }
+            .badge{ font-size: 0.8rem; padding: 5px 8px; }
+            .sidebar{ padding: 16px 12px; gap: 12px; }
+            .nav a{ padding: 8px 10px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div style="font-weight:800;">🏥 Pharma Admin</div>
+            <div class="nav">
+                <a href="/admin/dashboard">📊 لوحة التحكم</a>
+                <a href="/admin/orders">📋 الطلبات</a>
+                <a href="/admin/manual_order">➕ طلب يدوي</a>
+                <a href="/admin/profits">💰 الأرباح</a>
+                <a href="/admin/logout">🚪 تسجيل الخروج</a>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="page-head">
+                <h2 style="margin:0; display:flex; gap:8px; align-items:center;">📦 عرض المخزون <span class="pill">مراقبة الصلاحية والكمية</span></h2>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="stat-label">إجمالي المنتجات</div>
+                    <div class="stat-value">{{ items|length }}</div>
+                </div>
+                <div class="card">
+                    <div class="stat-label">بحالة جيدة</div>
+                    <div class="stat-value">{{ items|selectattr('status','equalto','ok')|list|length }}</div>
+                </div>
+                <div class="card">
+                    <div class="stat-label">مخزون قليل</div>
+                    <div class="stat-value">{{ items|selectattr('status','equalto','low')|list|length }}</div>
+                </div>
+                <div class="card">
+                    <div class="stat-label">قرب انتهاء</div>
+                    <div class="stat-value">{{ items|selectattr('status','equalto','expire_soon')|list|length }}</div>
+                </div>
+                <div class="card">
+                    <div class="stat-label">غير متوفر</div>
+                    <div class="stat-value">{{ items|selectattr('status','equalto','out')|list|length }}</div>
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <input id="searchBox" placeholder="ابحث بالاسم أو ID">
+                <select id="statusFilter">
+                    <option value="all">كل الحالات</option>
+                    <option value="ok">جيد</option>
+                    <option value="low">مخزون قليل</option>
+                    <option value="expire_soon">قرب انتهاء</option>
+                    <option value="out">غير متوفر</option>
+                </select>
+                <button class="btn" type="button" onclick="applyFilters()">تطبيق الفلتر</button>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="stockTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>اسم المنتج</th>
+                            <th>إجمالي الكمية</th>
+                            <th>أقرب صلاحية</th>
+                            <th>الأيام المتبقية</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr data-status="{{ item.status }}">
+                            <td>{{ item.pid }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.total_qty }}</td>
+                            <td>{{ item.nearest_exp }}</td>
+                            <td>{{ item.days_left }}</td>
+                            <td>
+                                <span class="badge status-{{ item.status }}">
+                                    {% if item.status == 'ok' %}✔ جيد
+                                    {% elif item.status == 'low' %}⚠ مخزون قليل
+                                    {% elif item.status == 'expire_soon' %}⏳ قرب انتهاء الصلاحية
+                                    {% else %}❌ منتهي الصلاحية{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+    const searchBox = document.getElementById('searchBox');
+    const statusFilter = document.getElementById('statusFilter');
+
+    function applyFilters(){
+        const q = (searchBox.value || "").toLowerCase();
+        const status = statusFilter.value;
+        const rows = document.querySelectorAll('#stockTable tbody tr');
+
+        rows.forEach(row=>{
+            const id = row.cells[0].innerText.toLowerCase();
+            const name = row.cells[1].innerText.toLowerCase();
+            const rowStatus = row.getAttribute('data-status');
+            const matchText = id.includes(q) || name.includes(q);
+            const matchStatus = status === 'all' || status === rowStatus;
+            row.style.display = (matchText && matchStatus) ? '' : 'none';
+        });
+    }
+
+    searchBox.addEventListener('input', applyFilters);
+    statusFilter.addEventListener('change', applyFilters);
+    </script>
+</body>
+</html>

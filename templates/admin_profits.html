@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير الأرباح</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        :root{
+            --bg:#f4f6fb; --card:#fff; --ink:#0f172a; --muted:#6b7280;
+            --primary:#0f9d58; --shadow:0 8px 24px rgba(15,23,42,0.12); --radius:14px;
+        }
+        *{box-sizing:border-box;}
+        body{margin:0;font-family:"Cairo",sans-serif;background:var(--bg);color:var(--ink);}
+        .layout{display:grid; grid-template-columns:240px 1fr; min-height:100vh;}
+        .sidebar{background:linear-gradient(180deg,#0c5131,#0f9d58); color:#fff; padding:22px 18px; display:flex; flex-direction:column; gap:14px;}
+        .nav a{color:#e0f2e9; text-decoration:none; padding:10px 12px; border-radius:10px; display:flex; gap:10px;}
+        .nav a:hover{background:rgba(255,255,255,0.1);}
+        .main{padding:20px 24px 32px;}
+        .page-head{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; align-items:center;}
+        .card{background:var(--card); border-radius:var(--radius); padding:14px; box-shadow:var(--shadow); margin-top:12px;}
+        table{width:100%; border-collapse:collapse;}
+        th,td{padding:10px; border-bottom:1px solid #e5e7eb; text-align:right;}
+        th{background:#0f9d58; color:#fff;}
+        .badge{padding:6px 10px; border-radius:999px; background:#e8f5e9; color:#0f9d58; font-weight:700;}
+        @media(max-width:960px){.layout{grid-template-columns:1fr;}.sidebar{flex-direction:row; flex-wrap:wrap;}}
+        @media(max-width:480px){
+            .main{ padding: 12px 16px 20px; }
+            .page-head{ margin-bottom: 12px; }
+            .page-head h2{ font-size: 1.2rem; }
+            .badge{ font-size: 0.85rem; padding: 5px 8px; }
+            .card{ padding: 12px; margin-top: 10px; }
+            .card > div{ flex-direction: column; gap: 8px; font-size: 0.9rem; }
+            table{ font-size: 0.85rem; }
+            th, td{ padding: 8px 6px; }
+            th{ font-size: 0.8rem; }
+            .sidebar{ padding: 16px 12px; gap: 12px; }
+            .nav a{ padding: 8px 10px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div style="font-weight:800;">🏥 Pharma Admin</div>
+            <div class="nav">
+                <a href="/admin/dashboard">📊 لوحة التحكم</a>
+                <a href="/admin/orders">📋 الطلبات</a>
+                <a href="/admin/manual_order">➕ طلب يدوي</a>
+                <a href="/admin/stock_overview">📦 المخزون</a>
+                <a href="/admin/logout">🚪 تسجيل الخروج</a>
+            </div>
+        </aside>
+        <main class="main">
+            <div class="page-head">
+                <h2>تقرير الأرباح</h2>
+                <span class="badge">إجمالي الربح: {{ totals.profit }} جنيه</span>
+            </div>
+
+            <div class="card">
+                <div style="display:flex; gap:14px; flex-wrap:wrap;">
+                    <div><strong>الإيراد الكلي:</strong> {{ totals.revenue }} جنيه</div>
+                    <div><strong>تكلفة الشراء:</strong> {{ totals.cost }} جنيه</div>
+                    <div><strong>الطلبات المكتملة:</strong> {{ completed_count }}</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>يومي</h3>
+                <table>
+                    <tr><th>اليوم</th><th>الإيراد</th><th>التكلفة</th><th>الربح</th></tr>
+                    {% for row in daily %}
+                    <tr>
+                        <td>{{ row.period }}</td>
+                        <td>{{ row.revenue }}</td>
+                        <td>{{ row.cost }}</td>
+                        <td>{{ row.profit }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>أسبوعي</h3>
+                <table>
+                    <tr><th>الأسبوع</th><th>الإيراد</th><th>التكلفة</th><th>الربح</th></tr>
+                    {% for row in weekly %}
+                    <tr>
+                        <td>{{ row.period }}</td>
+                        <td>{{ row.revenue }}</td>
+                        <td>{{ row.cost }}</td>
+                        <td>{{ row.profit }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>شهري</h3>
+                <table>
+                    <tr><th>الشهر</th><th>الإيراد</th><th>التكلفة</th><th>الربح</th></tr>
+                    {% for row in monthly %}
+                    <tr>
+                        <td>{{ row.period }}</td>
+                        <td>{{ row.revenue }}</td>
+                        <td>{{ row.cost }}</td>
+                        <td>{{ row.profit }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+

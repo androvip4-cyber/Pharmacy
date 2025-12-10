@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Pharma care</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap');
+
+        :root{
+            --bg: #f5f7fa;
+            --primary-700: #00796b;
+            --primary-500: #26a69a;
+            --card-bg: #ffffff;
+            --muted: #6b7280;
+            --danger: #ef4444;
+            --accent: #1565c0;
+            --shadow-1: 0 8px 24px rgba(12, 22, 28, 0.10);
+            --shadow-2: 0 12px 32px rgba(12,22,28,0.15);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --transition: 220ms ease;
+        }
+
+        *{box-sizing:border-box}
+        body{
+            font-family: 'Cairo', system-ui, sans-serif;
+            background: linear-gradient(180deg, var(--bg), #eef3f6 140%);
+            color:#0f1724;
+            margin:0;
+            -webkit-font-smoothing:antialiased;
+            line-height:1.5;
+            direction: rtl;
+        }
+
+        header{
+            background: linear-gradient(135deg,var(--primary-700),var(--primary-500));
+            color: #fff;
+            padding: 18px 24px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap: 16px;
+            box-shadow: var(--shadow-1);
+            position: sticky;
+            top:0;
+            z-index:50;
+        }
+        header h2{ margin:0; font-weight:800; font-size:1.3rem; letter-spacing:0.2px; }
+        header .sub{color:rgba(255,255,255,0.9); font-weight:500; font-size:0.92rem;}
+        #open-cart-btn{
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #fff;
+            padding:10px 14px;
+            border-radius: 12px;
+            cursor:pointer;
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            font-weight:700;
+            transition: transform var(--transition), background var(--transition);
+        }
+        #open-cart-btn:hover{ background: rgba(255,255,255,0.16); transform: translateY(-1px); }
+
+        .hero{
+            max-width: 1200px;
+            margin: 18px auto 6px;
+            background: linear-gradient(120deg, rgba(0,121,107,0.1), rgba(38,166,154,0.08));
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            box-shadow: var(--shadow-1);
+            display:grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap:14px;
+            align-items:center;
+        }
+        .hero h1{margin:0; font-size:1.4rem;}
+        .hero p{margin:6px 0 10px; color:var(--muted);}
+        .chips{display:flex; gap:8px; flex-wrap:wrap;}
+        .chip{
+            background:#fff;
+            color:#0f1724;
+            border-radius:999px;
+            padding:7px 12px;
+            box-shadow:0 6px 14px rgba(15,23,42,0.08);
+            font-weight:700;
+        }
+
+        .toolbar{
+            max-width:1200px;
+            margin: 10px auto 0;
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            align-items:center;
+        }
+        .toolbar input, .toolbar select{
+            padding:11px 12px;
+            border-radius:12px;
+            border:1px solid #e5e7eb;
+            font-family:inherit;
+            min-width:200px;
+        }
+        .toolbar .pill{
+            padding:10px 14px;
+            border-radius:12px;
+            background:#fff;
+            border:1px solid #e5e7eb;
+            box-shadow:0 6px 14px rgba(15,23,42,0.06);
+            font-weight:700;
+        }
+
+        .products{
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            padding: 18px 20px 26px;
+            max-width:1200px;
+            margin: 12px auto 28px;
+        }
+
+        .card{
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-1);
+            padding: 14px;
+            display:flex;
+            flex-direction:column;
+            gap:12px;
+            min-height: 340px;
+            overflow:hidden;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .card:hover{ transform: translateY(-6px); box-shadow: var(--shadow-2); }
+        .card img{
+            width:100%;
+            height:170px;
+            object-fit:contain;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #fafafa, #f3f7f8);
+            padding:10px;
+        }
+        .card h3{ margin:0; font-size:1.05rem; font-weight:800; color:#0b1220 }
+        .muted{color:var(--muted); font-size:0.92rem;}
+
+        .price-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+        .price{
+            font-weight:800;
+            font-size:1.05rem;
+            color: var(--primary-700);
+            background: linear-gradient(90deg, rgba(38,166,154,0.08), rgba(0,121,107,0.04));
+            padding: 6px 10px;
+            border-radius: 10px;
+        }
+        .stock{
+            font-size:0.85rem;
+            color: #0b7a6a;
+            background: rgba(2,136,209,0.06);
+            padding:6px 9px;
+            border-radius: 999px;
+            font-weight:700;
+        }
+        .badge{
+            font-size:0.8rem;
+            padding:5px 9px;
+            border-radius:999px;
+            display:inline-flex;
+            align-items:center;
+            gap:4px;
+            font-weight:700;
+        }
+        .b-exp{background:#ffe9d6; color:#c65a00;}
+        .b-low{background:#fff7d6; color:#a27900;}
+        .b-out{background:#fdecea; color:#c62828;}
+        
+        .expired-product{
+            opacity: 0.6;
+            position: relative;
+        }
+        .expired-product::before{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.05);
+            pointer-events: none;
+            border-radius: var(--radius-md);
+        }
+
+        .card button{
+            margin-top: auto;
+            border: none;
+            background: linear-gradient(90deg,var(--primary-700),var(--primary-500));
+            color: #fff;
+            padding: 11px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight:800;
+            transition: transform var(--transition), box-shadow var(--transition);
+            box-shadow: 0 8px 20px rgba(38,166,154,0.18);
+        }
+        .card button:hover{ box-shadow: 0 12px 28px rgba(38,166,154,0.24); transform:translateY(-1px); }
+
+        #cart-sidebar{
+            position: fixed;
+            top: 0;
+            right: -410px;
+            width: min(380px, calc(100% - 24px));
+            height: 100%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98), #fbfdff);
+            box-shadow: -14px 0 50px rgba(12,22,28,0.18);
+            transition: right 360ms cubic-bezier(.2,.9,.3,1);
+            z-index:999;
+            display:flex;
+            flex-direction:column;
+            border-radius: 12px 0 0 12px;
+            overflow: hidden;
+        }
+        #cart-sidebar.open{ right: 0; }
+        
+        /* Cart backdrop/overlay */
+        #cart-backdrop{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 360ms cubic-bezier(.2,.9,.3,1), visibility 360ms;
+        }
+        #cart-backdrop.show{
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .cart-header{padding: 16px; display:flex; justify-content:space-between; align-items:center; gap:12px; background: linear-gradient(90deg,var(--primary-700),var(--primary-500)); color:#fff;}
+        .cart-header h3{ margin:0; font-size:1rem; }
+        #close-cart-btn{background: transparent; border: none; color: #fff; font-size: 1.45rem; cursor: pointer; padding:6px; line-height:1;}
+        .cart-body{padding:14px; overflow-y:auto; flex:1;}
+        .cart-item{background: rgba(7,16,20,0.02); border-radius: 10px; padding:12px; margin-bottom:12px; box-shadow: 0 1px 0 rgba(12,22,28,0.03) inset;}
+        .cart-total{border-top: 1px dashed #e6e9ee; padding: 14px; font-weight:800; text-align:center; font-size:1rem; background: linear-gradient(180deg, transparent, rgba(2,136,209,0.02));}
+        .checkout-btn{margin: 12px; padding:12px 14px; border-radius: 12px; background: linear-gradient(90deg,var(--primary-700),var(--primary-500)); color:#fff; text-align:center; font-weight:800; cursor:pointer; box-shadow: 0 10px 30px rgba(1,67,64,0.12);}
+
+        .qty-box {display: flex; align-items: center; gap: 6px;}
+        .qty-btn {width: 32px; height: 32px; border-radius: 8px; border: none; background: var(--primary-700); color: white; font-size: 20px; line-height: 0; cursor: pointer; transition: var(--transition);}
+        .qty-btn:hover {background: var(--primary-500); transform: scale(1.07);}
+        .qty-btn:active {transform: scale(0.95);}
+
+        @media (max-width:900px){
+            .hero{grid-template-columns:1fr;}
+        }
+        @media (max-width:720px){
+            .products{ padding:16px; gap:14px; grid-template-columns: repeat( auto-fit, minmax(200px, 1fr) ); }
+            header{ padding:12px 16px }
+            .card{ min-height: 300px }
+        }
+        @media (max-width:480px){
+            header{ padding:10px 12px; flex-wrap: wrap; }
+            header h2{ font-size: 1.1rem; }
+            header .sub{ font-size: 0.85rem; }
+            #open-cart-btn{ padding: 8px 12px; font-size: 0.9rem; }
+            .hero{ padding: 14px 16px; margin: 12px auto 4px; }
+            .hero h1{ font-size: 1.2rem; }
+            .hero p{ font-size: 0.9rem; }
+            .chips{ gap: 6px; }
+            .chip{ padding: 6px 10px; font-size: 0.85rem; }
+            .toolbar{ padding: 12px 16px; gap: 8px; }
+            .toolbar input, .toolbar select{ min-width: auto; width: 100%; padding: 10px; font-size: 0.95rem; }
+            .products{ padding: 12px; gap: 12px; grid-template-columns: 1fr; }
+            .card{ min-height: auto; padding: 12px; }
+            .card img{ height: 140px; }
+            .card h3{ font-size: 1rem; }
+            .price-row{ flex-direction: column; align-items: flex-start; gap: 6px; }
+            .product-qty-selector{ flex-wrap: wrap; gap: 6px; }
+            .product-qty-input{ width: 70px; padding: 6px 8px; font-size: 0.9rem; }
+            .card button{ padding: 10px; font-size: 0.95rem; }
+            #cart-sidebar{ width: 100%; right: -100%; border-radius: 0; }
+            #cart-backdrop{ z-index: 997; }
+            footer{ padding: 20px 12px; }
+            footer h3{ font-size: 1rem; }
+        }
+        @media (prefers-reduced-motion: reduce){
+            *{ transition: none !important; animation: none !important; }
+        }
+
+        /* Sidebar cart */
+        #cart-sidebar{
+        position: fixed;
+        top: 0;
+        right: -410px;
+        width: min(380px, calc(100% - 24px));
+        height: 100%;
+        background: linear-gradient(180deg, rgba(255,255,255,0.98), #fbfdff);
+        box-shadow: -14px 0 50px rgba(12,22,28,0.18);
+        transition: right 360ms cubic-bezier(.2,.9,.3,1);
+        z-index:999;
+        display:flex;
+        flex-direction:column;
+        border-radius: 12px 0 0 12px;
+        overflow: hidden;
+        }
+
+        #cart-sidebar.open{ right: 0; }
+
+        /* Cart header */
+        .cart-header{
+        padding: 16px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:12px;
+        background: linear-gradient(90deg,var(--primary-700),var(--primary-500));
+        color:#fff;
+        }
+        .cart-header h3{ margin:0; font-size:1rem; }
+
+        /* Close button (make it visible) */
+        #close-cart-btn{
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 1.45rem;
+        cursor: pointer;
+        padding:6px;
+        line-height:1;
+        }
+
+        /* Body */
+        .cart-body{
+        padding:14px;
+        overflow-y:auto;
+        flex:1;
+        }
+
+        /* Cart item */
+        .cart-item{
+        background: rgba(7,16,20,0.02);
+        border-radius: 10px;
+        padding:12px;
+        margin-bottom:12px;
+        box-shadow: 0 1px 0 rgba(12,22,28,0.03) inset;
+        }
+        .cart-item h4{ margin:0 0 6px 0; font-size:0.98rem; font-weight:700 }
+        .cart-item small{ color:var(--muted) }
+
+        /* Controls */
+        .cart-controls{
+        margin-top:8px;
+        display:flex;
+        gap:8px;
+        align-items:center;
+        justify-content:space-between;
+        }
+        .cart-controls input[type="number"]{
+        width:72px;
+        padding:8px 10px;
+        border-radius:8px;
+        border:1px solid #e6e9ee;
+        font-weight:700;
+        text-align:center;
+        -moz-appearance:textfield;
+        appearance:textfield;
+        }
+        .cart-controls input[type="number"]::-webkit-outer-spin-button,
+        .cart-controls input[type="number"]::-webkit-inner-spin-button{
+        -webkit-appearance: none;
+        appearance: none;
+        margin: 0;
+        }
+
+        .remove-btn{
+        color: var(--danger);
+        cursor:pointer;
+        font-weight:700;
+        background: transparent;
+        border-radius:8px;
+        padding:6px 8px;
+        }
+
+        /* Checkout / total */
+        .cart-total{
+        border-top: 1px dashed #e6e9ee;
+        padding: 14px;
+        font-weight:800;
+        text-align:center;
+        font-size:1rem;
+        background: linear-gradient(180deg, transparent, rgba(2,136,209,0.02));
+        }
+        .checkout-btn{
+        margin: 12px;
+        padding:12px 14px;
+        border-radius: 10px;
+        background: linear-gradient(90deg,var(--primary-700),var(--primary-500));
+        color:#fff;
+        text-align:center;
+        font-weight:800;
+        cursor:pointer;
+        box-shadow: 0 10px 30px rgba(1,67,64,0.12);
+        }
+
+        .qty-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: var(--primary-700);
+            color: white;
+            font-size: 20px;
+            line-height: 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .qty-btn:hover {
+            background: var(--primary-500);
+            transform: scale(1.07);
+        }
+
+        .qty-btn:active {
+            transform: scale(0.95);
+        }
+
+
+        /* Small screens tweak */
+        @media (max-width:720px){
+        .products{ padding:18px; gap:14px; grid-template-columns: repeat( auto-fit, minmax(180px, 1fr) ); }
+        header{ padding:12px 16px }
+        .card{ min-height: 300px }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce){
+        *{ transition: none !important; animation: none !important; }
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <h2>Pharma care</h2>
+        <div class="sub">أدوية، مكملات، وعروض مميزة</div>
+    </div>
+    <button id="open-cart-btn">🛒 السلة (0)</button>
+</header>
+
+<div class="hero">
+    <div>
+        <h1>تسوق أدويتك بأمان وسرعة</h1>
+        <p>ابحث عن منتجك، اعرف الكمية المتوفرة وأقرب صلاحية، وأضف للسلة فوراً.</p>
+        <div class="chips">
+            <span class="chip">💊 أدوية</span>
+            <span class="chip">🛡️ مكملات</span>
+            <span class="chip">🕒 تسليم سريع</span>
+        </div>
+    </div>
+    <div style="text-align:center;">
+        <div class="pill">🔥 عروض اليوم على أشهر المنتجات</div>
+    </div>
+</div>
+
+<div class="toolbar">
+    <div style="position:relative; flex:1; max-width:400px;">
+        <input id="searchBox" placeholder="ابحث بالاسم..." style="width:100%; padding-right:40px;">
+        <button id="clearSearch" onclick="clearSearchBox()" style="position:absolute; left:8px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:1.2rem; color:var(--muted); display:none; padding:4px 8px;">×</button>
+    </div>
+    <select id="statusFilter">
+        <option value="all">كل الحالات</option>
+        <option value="in">متوفر</option>
+        <option value="low">مخزون قليل</option>
+        <option value="exp">قرب انتهاء</option>
+        <option value="out">غير متوفر</option>
+    </select>
+    <select id="sortSelect">
+        <option value="name">ترتيب: الاسم</option>
+        <option value="price">ترتيب: السعر</option>
+        <option value="stock">ترتيب: الكمية</option>
+    </select>
+</div>
+
+<section class="products" id="productsGrid">
+    {% for pid, p in products.items() %}
+    {% set ns = namespace(total_qty=0, display_price=0, nearest_expiry='') %}
+    {% if p.batches is defined and p.batches %}
+        {% for b in p.batches %}
+            {% set ns.total_qty = ns.total_qty + b.quantity %}
+            {% if loop.first %}
+                {% set ns.display_price = b.price %}
+                {% set ns.nearest_expiry = b.expiry_date %}
+            {% endif %}
+            {% if b.expiry_date and (ns.nearest_expiry == '' or b.expiry_date < ns.nearest_expiry) %}
+                {% set ns.nearest_expiry = b.expiry_date %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <div class="card" 
+         data-name="{{ p.name | lower }}"
+         data-price="{{ ns.display_price }}"
+         data-stock="{{ ns.total_qty }}"
+         data-exp="{{ ns.nearest_expiry }}"
+         data-expired="false">
+        <img src="{{ url_for('static', filename=p.image) }}" alt="{{ p.name }}">
+        <h3>{{ p.name }}</h3>
+        <div class="price-row">
+            <span class="price">{{ ns.display_price }} جنيه</span>
+            <span class="stock">المتوفر: {{ ns.total_qty }}</span>
+        </div>
+        {% if ns.nearest_expiry %}
+        <span class="badge b-exp">أقرب صلاحية: {{ ns.nearest_expiry }}</span>
+        {% endif %}
+        <div class="muted">اختر الكمية ثم أضف للسلة</div>
+        <div class="product-qty-selector" style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <label style="font-size: 0.9rem; color: var(--muted); font-weight: 600;">الكمية:</label>
+            <input 
+                type="number" 
+                min="1" 
+                max="{{ ns.total_qty }}" 
+                value="1" 
+                class="product-qty-input" 
+                data-pid="{{ pid }}"
+                style="width: 80px; padding: 8px 10px; border-radius: 8px; border: 1px solid #e6e9ee; font-weight: 700; text-align: center; -moz-appearance: textfield; appearance: textfield;"
+            >
+        </div>
+        <button class="add-to-cart-btn" data-pid="{{ pid }}" data-name="{{ p.name }}" data-price="{{ ns.display_price }}" data-stock="{{ ns.total_qty }}">
+            أضف إلى السلة
+        </button>
+    </div>
+    {% endfor %}
+</section>
+
+
+
+
+<div id="cart-backdrop"></div>
+<aside id="cart-sidebar">
+    <div class="cart-header">
+        <h3>🛒 السلة</h3>
+        <button id="close-cart-btn">×</button>
+    </div>
+
+    <div class="cart-body" id="cart-body"></div>
+
+    <div class="cart-total" id="cart-total">الإجمالي: 0 جنيه</div>
+    <div class="checkout-btn" onclick="checkout()">إتمام الشراء</div>
+</aside>
+
+<script>
+    function getCart() {
+        return JSON.parse(localStorage.getItem("cart")) || {};
+    }
+
+    function saveCart(cart) {
+        localStorage.setItem("cart", JSON.stringify(cart));
+    }
+
+    function addToCart(id, name, price, newQty = null, isTotalQty = false) {
+        let cart = getCart();
+        let oldQty = cart[id]?.qty || 0;
+        
+        let finalQty;
+        
+        if (!cart[id]) {
+            // Product not in cart yet - add it with the specified quantity (or 1 if not specified)
+            finalQty = newQty ? parseInt(newQty) : 1;
+            if (finalQty > 2) {
+                alert("⚠️ لا يمكن إضافة نفس المنتج أكثر من مرتين");
+                finalQty = 2;
+            }
+        } else {
+            // Product already in cart
+            let currentQty = cart[id].qty;
+            
+            if (isTotalQty) {
+                // newQty is the desired total quantity (from input field change)
+                finalQty = parseInt(newQty);
+                if (finalQty > 2) {
+                    alert("⚠️ لا يمكن إضافة نفس المنتج أكثر من مرتين. الحد الأقصى هو 2");
+                    finalQty = 2;
+                }
+            } else {
+                // newQty is the amount to add (from "Add to Cart" button) or null (add 1)
+                let qtyToAdd = newQty ? parseInt(newQty) : 1;
+                let newTotalQty = currentQty + qtyToAdd;
+                
+                if (newTotalQty > 2) {
+                    alert("⚠️ لا يمكن إضافة نفس المنتج أكثر من مرتين. الحد الأقصى هو 2");
+                    finalQty = 2;
+                } else {
+                    finalQty = newTotalQty;
+                }
+            }
+        }
+
+        let qtyToCheck = finalQty;
+
+        fetch(`/add_to_cart/${id}?qty=${qtyToCheck}`)
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.status !== "success") {
+                    alert(data.message);
+                    renderCart();
+                    return;
+                }
+
+                if (!cart[id]) {
+                    cart[id] = { name: name, price: price, qty: finalQty };
+                } else {
+                    cart[id].qty = finalQty;
+                }
+
+                saveCart(cart);
+                updateCartCount();
+                renderCart();
+            });
+    }
+
+    function handleQtyChange(id, name, price, newQty) {
+        newQty = parseInt(newQty);
+
+        let cart = getCart();
+        let oldQty = cart[id].qty;
+
+        if (newQty <= 0) {
+            removeItem(id);
+            return;
+        }
+
+        if (newQty > oldQty) {
+            // newQty is the desired total quantity from input field
+            addToCart(id, name, price, newQty, true);
+            return;
+        }
+
+        if (newQty < oldQty) {
+            cart[id].qty = oldQty - 1;
+
+            saveCart(cart);
+            updateCartCount();
+            renderCart();
+        }
+    }
+
+
+    function updateCartCount() {
+        let cart = getCart();
+        let count = Object.values(cart).reduce((t, i) => t + i.qty, 0);
+        document.getElementById("open-cart-btn").innerText = `🛒 السلة (${count})`;
+    }
+
+    function increaseQty(id, name, price) {
+        let cart = getCart();
+        let currentQty = cart[id].qty;
+        
+        // Check if already at max before trying to add
+        if (currentQty >= 2) {
+            alert("⚠️ لا يمكن إضافة نفس المنتج أكثر من مرتين. الحد الأقصى هو 2");
+            return;
+        }
+        
+        // Just add 1 to current quantity
+        addToCart(id, name, price, null);
+    }
+
+    function decreaseQty(id, name, price) {
+        let cart = getCart();
+        let newQty = cart[id].qty - 1;
+
+        if (newQty <= 0) {
+            removeItem(id);
+        } else {
+            cart[id].qty = newQty;
+            saveCart(cart);
+            updateCartCount();
+            renderCart();
+        }
+    }
+
+
+    function renderCart() {
+        let cart = getCart();
+        let body = document.getElementById("cart-body");
+        let total = 0;
+
+        body.innerHTML = "";
+
+        for (let id in cart) {
+            let item = cart[id];
+            total += item.price * item.qty;
+
+            body.innerHTML += `
+                <div class="cart-item">
+                    <h4>${item.name}</h4>
+                    <small>${item.price} جنيه</small>
+
+                    <div class="cart-controls">
+
+                        <div class="qty-box">
+                            <button class="qty-btn" onclick="decreaseQty('${id}', '${item.name}', ${item.price})">−</button>
+
+                            <input 
+                                type="number"
+                                min="1"
+                                value="${item.qty}"
+                                onchange="handleQtyChange('${id}', '${item.name}', ${item.price}, this.value)"
+                            >
+
+                            <button class="qty-btn" onclick="increaseQty('${id}', '${item.name}', ${item.price})">+</button>
+                        </div>
+
+                        <span class="remove-btn" onclick="removeItem('${id}')">حذف</span>
+                    </div>
+                </div>
+            `;
+
+        }
+
+        document.getElementById("cart-total").innerText = `الإجمالي: ${total} جنيه`;
+    }
+
+    function removeItem(id) {
+        let cart = getCart();
+        delete cart[id];
+        saveCart(cart);
+        updateCartCount();
+        renderCart();
+    }
+
+    function checkout() {
+        let cart = getCart();
+        localStorage.setItem("checkout_cart", JSON.stringify(cart));
+        window.location.href = "/checkout";  
+    }
+
+    function applyFilters(){
+        const q = (document.getElementById("searchBox").value || "").toLowerCase();
+        const status = document.getElementById("statusFilter").value;
+        const cards = document.querySelectorAll("#productsGrid .card");
+        cards.forEach(card=>{
+            const name = card.getAttribute("data-name");
+            const stock = parseInt(card.getAttribute("data-stock") || "0");
+            const exp = card.getAttribute("data-exp") || "";
+
+            // status logic
+            let matchStatus = true;
+            if(status === "in") matchStatus = stock > 0;
+            else if(status === "low") matchStatus = stock > 0 && stock <= 5;
+            else if(status === "out") matchStatus = stock <= 0;
+            else if(status === "exp"){
+                if(exp){
+                    const days = daysLeft(exp);
+                    matchStatus = days !== null && days <= 30 && days >= 0;
+                } else {
+                    matchStatus = false;
+                }
+            }
+
+            const matchText = name.includes(q);
+            card.style.display = (matchText && matchStatus) ? "" : "none";
+        });
+    }
+
+    function daysLeft(dateStr){
+        try{
+            const target = new Date(dateStr);
+            const now = new Date();
+            const diff = target - now;
+            return Math.floor(diff / (1000*60*60*24));
+        }catch(e){ return null; }
+    }
+
+    function applySort(){
+        const by = document.getElementById("sortSelect").value;
+        const grid = document.getElementById("productsGrid");
+        const cards = Array.from(grid.children);
+        cards.sort((a,b)=>{
+            if(by === "name"){
+                return a.getAttribute("data-name").localeCompare(b.getAttribute("data-name"));
+            }
+            if(by === "price"){
+                return parseFloat(a.getAttribute("data-price")) - parseFloat(b.getAttribute("data-price"));
+            }
+            if(by === "stock"){
+                return parseInt(b.getAttribute("data-stock")) - parseInt(a.getAttribute("data-stock"));
+            }
+            return 0;
+        });
+        cards.forEach(c=>grid.appendChild(c));
+    }
+
+
+    const sidebar = document.getElementById('cart-sidebar');
+    const backdrop = document.getElementById('cart-backdrop');
+    
+    function toggleCart() {
+        const isOpen = sidebar.classList.contains("open");
+        if (isOpen) {
+            sidebar.classList.remove("open");
+            backdrop.classList.remove("show");
+        } else {
+            sidebar.classList.add("open");
+            backdrop.classList.add("show");
+        }
+    }
+    
+    function closeCart() {
+        sidebar.classList.remove("open");
+        backdrop.classList.remove("show");
+    }
+
+    document.getElementById("open-cart-btn").onclick = toggleCart;
+    document.getElementById("close-cart-btn").onclick = closeCart;
+    backdrop.onclick = closeCart;
+    
+    // Close cart when clicking on sidebar itself (not on cart content)
+    sidebar.addEventListener('click', function(e) {
+        if (e.target === sidebar) {
+            closeCart();
+        }
+    });
+
+    updateCartCount();
+    renderCart();
+    checkExpiredProducts();
+    applyFilters();
+    applySort();
+
+    function clearSearchBox() {
+        document.getElementById("searchBox").value = "";
+        document.getElementById("clearSearch").style.display = "none";
+        applyFilters();
+    }
+    
+    function updateClearButton() {
+        const searchBox = document.getElementById("searchBox");
+        const clearBtn = document.getElementById("clearSearch");
+        if (clearBtn) {
+            clearBtn.style.display = searchBox.value ? "block" : "none";
+        }
+    }
+    
+    document.getElementById("searchBox").addEventListener("input", function() {
+        updateClearButton();
+        applyFilters();
+    });
+    document.getElementById("statusFilter").addEventListener("change", applyFilters);
+    document.getElementById("sortSelect").addEventListener("change", applySort);
+    
+    // Show clear button if there's existing text
+    updateClearButton();
+
+    // Check and mark expired products on page load
+    function checkExpiredProducts() {
+        const cards = document.querySelectorAll("#productsGrid .card");
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        cards.forEach(card => {
+            const expDateStr = card.getAttribute("data-exp");
+            if (expDateStr) {
+                try {
+                    const expDate = new Date(expDateStr);
+                    expDate.setHours(0, 0, 0, 0);
+                    if (expDate < today) {
+                        card.classList.add("expired-product");
+                        card.setAttribute("data-expired", "true");
+                        
+                        // Hide quantity selector and button, show expired message
+                        const qtySelector = card.querySelector(".product-qty-selector");
+                        const addBtn = card.querySelector(".add-to-cart-btn");
+                        const mutedText = card.querySelector(".muted");
+                        
+                        if (qtySelector) qtySelector.style.display = "none";
+                        if (addBtn) addBtn.style.display = "none";
+                        if (mutedText) {
+                            mutedText.innerHTML = '<span style="color: var(--danger); font-weight: 700;">⚠️ هذا المنتج منتهي الصلاحية وغير متاح للبيع</span>';
+                        }
+                        
+                        // Update badge
+                        const badge = card.querySelector(".badge");
+                        if (badge) {
+                            badge.className = "badge b-out";
+                            badge.textContent = "⚠️ منتهي الصلاحية";
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error parsing expiry date:", e);
+                }
+            }
+        });
+    }
+    
+    // Add event listeners for add-to-cart buttons
+    document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
+        btn.addEventListener("click", function() {
+            const card = this.closest(".card");
+            const isExpired = card.getAttribute("data-expired") === "true";
+            
+            if (isExpired) {
+                alert("⚠️ هذا المنتج منتهي الصلاحية ولا يمكن إضافته للسلة");
+                return;
+            }
+            
+            const pid = this.getAttribute("data-pid");
+            const name = this.getAttribute("data-name");
+            const price = parseFloat(this.getAttribute("data-price"));
+            const stock = parseInt(this.getAttribute("data-stock") || "0");
+            
+            // Get quantity from the input field
+            const qtyInput = document.querySelector(`.product-qty-input[data-pid="${pid}"]`);
+            const qty = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+            
+            // Validate quantity
+            if (qty < 1) {
+                alert("⚠️ الكمية يجب أن تكون على الأقل 1");
+                return;
+            }
+            if (qty > stock) {
+                alert(`⚠️ الكمية المطلوبة غير متوفرة، المتاح فقط: ${stock}`);
+                return;
+            }
+            
+            addToCart(pid, name, price, qty);
+        });
+    });
+    
+    // Check expired products on page load
+    checkExpiredProducts();
+    
+    // Prevent negative numbers in quantity inputs
+    document.querySelectorAll(".product-qty-input").forEach(input => {
+        input.addEventListener("input", function() {
+            if (this.value < 1) {
+                this.value = 1;
+            }
+            const max = parseInt(this.getAttribute("max") || "9999");
+            if (this.value > max) {
+                this.value = max;
+            }
+        });
+    });
+</script>
+
+<footer style="background: linear-gradient(135deg, var(--primary-700), var(--primary-500)); color: #fff; padding: 32px 24px; margin-top: 48px; box-shadow: var(--shadow-1);">
+    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+        <div>
+            <h3 style="margin: 0 0 12px; font-size: 1.2rem; font-weight: 800;">{{ pharmacy.get('name', 'صيدلية') }}</h3>
+            {% if pharmacy.get('address') %}
+            <p style="margin: 8px 0; opacity: 0.9; display: flex; align-items: center; gap: 8px;">
+                📍 {{ pharmacy.address }}
+            </p>
+            {% endif %}
+            {% if pharmacy.get('phone') %}
+            <p style="margin: 8px 0; opacity: 0.9; display: flex; align-items: center; gap: 8px;">
+                📞 <a href="tel:{{ pharmacy.phone }}" style="color: #fff; text-decoration: none;">{{ pharmacy.phone }}</a>
+            </p>
+            {% endif %}
+        </div>
+        <div>
+            {% if pharmacy.get('license') %}
+            <p style="margin: 8px 0; opacity: 0.9;">
+                <strong>ترخيص مهني:</strong> {{ pharmacy.license }}
+            </p>
+            {% endif %}
+            {% if pharmacy.get('tax_number') %}
+            <p style="margin: 8px 0; opacity: 0.9;">
+                <strong>الرقم الضريبي:</strong> {{ pharmacy.tax_number }}
+            </p>
+            {% endif %}
+        </div>
+        <div>
+            {% if pharmacy.get('footer') %}
+            <p style="margin: 8px 0; opacity: 0.85; font-style: italic;">
+                {{ pharmacy.footer }}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+    <div style="text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.2); opacity: 0.8;">
+        <p style="margin: 0;">© 2025 جميع الحقوق محفوظة</p>
+    </div>
+</footer>
+
+</body>
+</html>

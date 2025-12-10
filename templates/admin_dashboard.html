@@ -1,0 +1,584 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الأدمن</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+        :root{
+            --bg: #f4f6fb;
+            --card: #ffffff;
+            --ink: #0f172a;
+            --muted: #6b7280;
+            --primary: #0f9d58;
+            --primary-2: #0b7d46;
+            --accent: #1976d2;
+            --danger: #c62828;
+            --shadow: 0 8px 28px rgba(15,23,42,0.12);
+            --radius: 14px;
+        }
+
+        *{box-sizing:border-box;}
+        body{
+            margin:0;
+            font-family:"Cairo",system-ui,sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            direction: rtl;
+        }
+
+        .layout{
+            display:grid;
+            grid-template-columns: 250px 1fr;
+            min-height:100vh;
+        }
+        .sidebar{
+            background: linear-gradient(180deg,#0c5131,#0f9d58);
+            color:#fff;
+            padding:24px 18px;
+            display:flex;
+            flex-direction:column;
+            gap:18px;
+        }
+        .logo{
+            font-weight:800;
+            font-size:1.2rem;
+            letter-spacing:0.4px;
+        }
+        .nav a{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:10px 12px;
+            color:#e0f2e9;
+            text-decoration:none;
+            border-radius:10px;
+            transition:all 180ms ease;
+        }
+        .nav a:hover{
+            background: rgba(255,255,255,0.1);
+            transform: translateX(-4px);
+        }
+
+        .main{
+            padding:20px 24px 32px;
+        }
+        .page-head{
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:space-between;
+            align-items:center;
+            gap:12px;
+            margin-bottom:16px;
+        }
+        .page-head h1{
+            margin:0;
+            font-size:1.6rem;
+            display:flex;
+            gap:8px;
+            align-items:center;
+        }
+        .pill{
+            background:#e8f5e9;
+            color:var(--primary);
+            padding:6px 10px;
+            border-radius:999px;
+            font-weight:700;
+            font-size:0.9rem;
+        }
+
+        .grid-3{
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+            gap:14px;
+        }
+        .card{
+            background: var(--card);
+            border-radius: var(--radius);
+            padding:16px;
+            box-shadow: var(--shadow);
+        }
+        .stat{
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+        }
+        .stat .label{color:var(--muted); font-size:0.95rem;}
+        .stat .value{font-size:1.4rem; font-weight:800;}
+
+        .two-col{
+            display:grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap:14px;
+            margin-top:14px;
+        }
+
+        form .field{
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+            margin-bottom:12px;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="file"]{
+            padding:10px 12px;
+            border-radius:10px;
+            border:1px solid #e5e7eb;
+            font-family:inherit;
+            transition:border-color 160ms ease, box-shadow 160ms ease;
+        }
+        input:focus{
+            outline:none;
+            border-color: var(--primary);
+            box-shadow:0 0 0 3px rgba(15,157,88,0.12);
+        }
+        .btn{
+            background: linear-gradient(90deg,var(--primary),var(--primary-2));
+            color:#fff;
+            padding:12px;
+            border:none;
+            border-radius:10px;
+            font-weight:700;
+            cursor:pointer;
+            width:100%;
+            box-shadow:0 10px 24px rgba(15,157,88,0.22);
+            transition:transform 140ms ease, box-shadow 140ms ease;
+        }
+        .btn:hover{transform:translateY(-1px);}
+        .btn:active{transform:translateY(1px); box-shadow:none;}
+        .btn-ghost{
+            background: transparent;
+            color: var(--primary);
+            border:1px dashed #c8e6c9;
+            box-shadow:none;
+        }
+        .btn-danger{
+            background: var(--danger);
+            box-shadow:0 8px 20px rgba(198,40,40,0.25);
+        }
+        .btn-accent{
+            background: linear-gradient(90deg,#1565c0,#2196f3);
+            box-shadow:0 10px 24px rgba(33,150,243,0.25);
+        }
+
+        .section-title{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            margin:0 0 10px 0;
+            font-size:1.1rem;
+        }
+
+        .product-grid{
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+            gap:12px;
+            margin-top:12px;
+        }
+        .product-card{
+            background: var(--card);
+            border-radius: var(--radius);
+            padding:14px;
+            box-shadow: var(--shadow);
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+        }
+        .product-head{
+            display:flex;
+            justify-content:space-between;
+            gap:10px;
+            align-items:center;
+        }
+        .product-image{
+            width:86px;
+            height:86px;
+            object-fit:contain;
+            border-radius:12px;
+            background:#f8fafc;
+            border:1px solid #e5e7eb;
+            padding:6px;
+        }
+        .batch-block{
+            background:#f8fafc;
+            border:1px solid #e5e7eb;
+            border-radius:12px;
+            padding:10px;
+            margin-top:8px;
+        }
+        .badge{
+            display:inline-block;
+            padding:5px 10px;
+            border-radius:999px;
+            font-size:0.85rem;
+            background:#eef2ff;
+            color:#4338ca;
+            font-weight:700;
+        }
+
+        .toolbar{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            align-items:center;
+        }
+        .toolbar input{
+            width:260px;
+        }
+
+        canvas{background:#fff; border-radius: var(--radius); box-shadow:var(--shadow); padding:8px;}
+
+        @media(max-width:980px){
+            .layout{grid-template-columns:1fr;}
+            .sidebar{flex-direction:row; flex-wrap:wrap; align-items:center;}
+            .two-col{grid-template-columns:1fr;}
+            .toolbar input{width:100%;}
+        }
+        @media(max-width:480px){
+            .main{ padding: 12px 16px 20px; }
+            .page-head{ margin-bottom: 12px; }
+            .page-head h1{ font-size: 1.2rem; }
+            .pill{ font-size: 0.8rem; padding: 5px 8px; }
+            .grid-3{ grid-template-columns: 1fr; gap: 10px; }
+            .card{ padding: 12px; }
+            .stat .value{ font-size: 1.2rem; }
+            .stat .label{ font-size: 0.85rem; }
+            .two-col{ gap: 12px; margin-top: 12px; }
+            .section-title{ font-size: 1rem; }
+            .product-grid{ grid-template-columns: 1fr; gap: 10px; }
+            .product-card{ padding: 12px; }
+            .product-head{ flex-direction: column; align-items: flex-start; }
+            .product-image{ width: 100%; max-width: 120px; height: auto; }
+            .batch-block{ padding: 8px; }
+            .field{ margin-bottom: 8px; }
+            input[type="text"], input[type="number"], input[type="date"], input[type="file"]{ padding: 8px 10px; font-size: 0.95rem; }
+            .btn{ padding: 10px; font-size: 0.95rem; }
+            .toolbar{ flex-direction: column; }
+            .toolbar input{ width: 100%; }
+            .sidebar{ padding: 16px 12px; gap: 12px; }
+            .logo{ font-size: 1rem; }
+            .nav a{ padding: 8px 10px; font-size: 0.9rem; }
+            canvas{ max-width: 100%; height: auto !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="logo">🏥 Pharma Admin</div>
+            <div class="nav">
+                <a href="/admin/orders">📋 الطلبات</a>
+                <a href="/admin/manual_order">➕ طلب يدوي</a>
+                <a href="/admin/stock_overview">📦 المخزون</a>
+                <a href="/admin/profits">💰 الأرباح</a>
+                <a href="/admin/logout">🚪 تسجيل الخروج</a>
+            </div>
+            <div id="expiry-alert"></div>
+        </aside>
+
+        <main class="main">
+            <div class="page-head">
+                <h1>لوحة التحكم <span class="pill">إدارة المنتجات</span></h1>
+                <div class="toolbar">
+                    <input id="productFilter" placeholder="ابحث بالاسم أو فلتر..." />
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="card stat">
+                    <div class="label">الطلبات الكلية</div>
+                    <div class="value" id="stat-orders">...</div>
+                </div>
+                <div class="card stat">
+                    <div class="label">الإيراد</div>
+                    <div class="value" id="stat-revenue">...</div>
+                </div>
+                <div class="card stat">
+                    <div class="label">منتجات منتهية/قريبة</div>
+                    <div class="value" id="stat-expiring">...</div>
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="card">
+                    <h3 class="section-title">➕ إضافة منتج جديد</h3>
+                    <form action="/admin/add_product" method="post" enctype="multipart/form-data">
+                        <div class="field">
+                            <label>اسم المنتج</label>
+                            <input type="text" name="name" required>
+                        </div>
+                        <div class="field">
+                            <label>سعر الشراء (تكلفة الصيدلية)</label>
+                            <input type="number" step="0.01" name="purchase_price" required>
+                        </div>
+                        <div class="field">
+                            <label>سعر البيع</label>
+                            <input type="number" step="0.01" name="sell_price" required>
+                        </div>
+                        <div class="field">
+                            <label>الكمية</label>
+                            <input type="number" name="stock" required>
+                        </div>
+                        <div class="field">
+                            <label>تاريخ الانتهاء</label>
+                            <input type="date" name="expiry_date">
+                        </div>
+                        <div class="field">
+                            <label>أو رفع صورة</label>
+                            <input type="file" name="image_file" accept="image/*">
+                        </div>
+                        <button class="btn">إضافة</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3 class="section-title">📈 المبيعات</h3>
+                    <canvas id="salesChart" height="220"></canvas>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:14px;">
+                <h3 class="section-title">🛍️ جميع المنتجات</h3>
+                <div class="product-grid">
+                    {% for pid, product in products.items() %}
+                    <div class="product-card">
+                        <div class="product-head">
+                            <div style="flex:1;">
+                                <div class="field" style="margin:0;">
+                                    <label>اسم المنتج</label>
+                                    <input type="text" value="{{ product.name }}" onchange="saveMain('{{ pid }}','name',this.value)">
+                                </div>
+                                {% if product.batches and product.batches[0].price %}
+                                    <span class="badge">السعر الحالي: {{ product.batches[0].price }} جنيه</span>
+                                {% endif %}
+                            </div>
+                            {% if product.image %}
+                                <img src="{{ url_for('static', filename=product.image) }}" class="product-image">
+                            {% endif %}
+                        </div>
+
+                        <div class="field" style="margin-top:4px;">
+                            <label>📸 تغيير الصورة</label>
+                            <input type="file" accept="image/*" onchange="uploadImage('{{ pid }}', this.files[0])">
+                        </div>
+
+                        {% for b in product.batches %}
+                        {% set i = loop.index0 %}
+                        <div class="batch-block" data-pid="{{ pid }}" data-index="{{ i }}">
+                            <div class="field" style="margin-bottom:8px;">
+                                <label>تاريخ الانتهاء</label>
+                                <input type="date" value="{{ b.expiry_date }}" class="batch-input">
+                            </div>
+                            <div class="field" style="margin-bottom:8px;">
+                                <label>الكمية</label>
+                                <input type="number" value="{{ b.quantity }}" class="batch-input">
+                            </div>
+                            <div class="field" style="margin-bottom:10px;">
+                                <label>سعر البيع</label>
+                                <input type="number" value="{{ b.price }}" class="batch-input">
+                            </div>
+                            <div class="field" style="margin-bottom:10px;">
+                                <label>سعر الشراء</label>
+                                <input type="number" value="{{ b.get('purchase_price', b.price) }}" class="batch-input">
+                            </div>
+                            <button class="btn btn-danger batch-delete-btn">❌ حذف الدفعة</button>
+                        </div>
+                        {% endfor %}
+
+                        <button class="btn btn-accent" onclick="addBatch('{{ pid }}')">➕ إضافة كمية بتاريخ جديد</button>
+                        <button class="btn btn-danger" onclick="deleteProduct('{{ pid }}')">🗑️ حذف المنتج</button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    async function loadExpiryAlert() {
+        let r = await fetch("/admin/expiring_count");
+        let data = await r.json();
+        let box = document.getElementById("expiry-alert");
+
+        if (data.count > 0) {
+            box.innerHTML = `
+                <div style="
+                    background:rgba(255,255,255,0.1);
+                    border:1px solid rgba(255,255,255,0.2);
+                    padding:12px;
+                    border-radius:12px;
+                    line-height:1.5;
+                    font-weight:700;
+                ">
+                    ⚠ يوجد ${data.count} منتج/منتجات ستنتهي صلاحيتها خلال أقل من 30 يومًا
+                    <br>
+                    <a href="/admin/stock_overview" style="color:#fff; font-weight:800;">عرض التفاصيل</a>
+                </div>
+            `;
+        } else {
+            box.innerHTML = "";
+        }
+    }
+    loadExpiryAlert();
+
+    function saveMain(pid, field, value){
+        fetch(`/admin/edit_product/${pid}`, {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({
+                action:"edit_main",
+                field: field,
+                value: value
+            })
+        });
+    }
+
+    function saveBatch(pid, index){
+        let block = document.querySelector(`.batch-block[data-pid="${pid}"][data-index="${index}"]`);
+        let inputs = block.querySelectorAll("input");
+
+        fetch(`/admin/edit_product/${pid}`, {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({
+                action:"edit_batch",
+                index:index,
+            expiry_date: inputs[0].value,
+            quantity: inputs[1].value,
+            price: inputs[2].value,
+            purchase_price: inputs[3].value
+            })
+        }).then(()=>location.reload());
+    }
+    
+    // Event delegation for batch inputs
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('batch-input')) {
+            let block = e.target.closest('.batch-block');
+            let pid = block.getAttribute('data-pid');
+            let index = parseInt(block.getAttribute('data-index'));
+            saveBatch(pid, index);
+        }
+    });
+    
+    // Event delegation for delete batch buttons
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('batch-delete-btn')) {
+            let block = e.target.closest('.batch-block');
+            let pid = block.getAttribute('data-pid');
+            let index = parseInt(block.getAttribute('data-index'));
+            deleteBatch(pid, index);
+        }
+    });
+
+    function addBatch(pid){
+        fetch(`/admin/edit_product/${pid}`, {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ action:"add_batch" })
+        }).then(()=>location.reload());
+    }
+
+    function deleteBatch(pid, index){
+        if(!confirm("متأكد؟")) return;
+        fetch(`/admin/edit_product/${pid}`, {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ action:"delete_batch", index:index })
+        }).then(()=>location.reload());
+    }
+
+    function uploadImage(pid, file){
+        let form = new FormData();
+        form.append("action","upload_image");
+        form.append("image",file);
+
+        fetch(`/admin/edit_product/${pid}`, {
+            method:"POST",
+            body: form
+        }).then(()=>location.reload());
+    }
+
+    function deleteProduct(pid){
+        if(!confirm("هل تريد حذف هذا المنتج بالكامل؟")) return;
+        fetch(`/admin/edit_product/${pid}`, {
+            method:"POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ action:"delete_product" })
+        }).then(()=>location.reload());
+    }
+
+    async function loadStats(){
+        let res = await fetch("/admin/reports");
+        let data = await res.json();
+        document.getElementById("stat-orders").innerText = data.total_orders;
+        document.getElementById("stat-revenue").innerText = data.total_revenue + " جنيه";
+        document.getElementById("stat-expiring").innerText = data.expiring_count;
+
+        const labels = data.top_products.map(p => p[0]);
+        const values = data.top_products.map(p => p[1]);
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: { labels: labels, datasets: [{ label: 'الكمية المباعة', data: values, backgroundColor:'#0f9d58' }] },
+            options: { plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}} }
+        });
+    }
+    loadStats();
+
+    function applyFilter(){
+        const q = document.getElementById("productFilter").value.toLowerCase().trim();
+        const now = new Date();
+        const cards = document.querySelectorAll(".product-card");
+        
+        cards.forEach(card => {
+            const cardText = card.innerText.toLowerCase();
+            let shouldShow = true;
+            
+            if (q) {
+                // Check if query matches product name
+                const productName = card.querySelector('input[type="text"]')?.value?.toLowerCase() || '';
+                const matchesName = productName.includes(q) || cardText.includes(q);
+                
+                // Check for expiry-related keywords
+                if (q.includes('قرب') || q.includes('انته') || q.includes('expir')) {
+                    const batchBlocks = card.querySelectorAll('.batch-block');
+                    let hasExpiring = false;
+                    
+                    batchBlocks.forEach(block => {
+                        const dateInput = block.querySelector('input[type="date"]');
+                        if (dateInput && dateInput.value) {
+                            const expiryDate = new Date(dateInput.value);
+                            const daysLeft = Math.floor((expiryDate - now) / (1000 * 60 * 60 * 24));
+                            if (daysLeft <= 30 && daysLeft >= 0) {
+                                hasExpiring = true;
+                            }
+                        }
+                    });
+                    
+                    shouldShow = matchesName && hasExpiring;
+                } else {
+                    shouldShow = matchesName;
+                }
+            }
+            
+            card.style.display = shouldShow ? "" : "none";
+        });
+    }
+    
+    // Real-time filtering on input
+    document.getElementById("productFilter").addEventListener("input", applyFilter);
+    document.getElementById("productFilter").addEventListener("keyup", function(e) {
+        if (e.key === "Enter") {
+            applyFilter();
+        }
+    });
+    </script>
+</body>
+</html>

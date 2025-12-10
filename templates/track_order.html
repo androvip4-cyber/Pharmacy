@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تتبع الطلب</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        body{font-family:"Cairo",sans-serif; background:#f4f6fb; margin:0; padding:0; color:#0f172a;}
+        .wrap{max-width:620px; margin:40px auto; background:#fff; padding:22px; border-radius:14px; box-shadow:0 8px 24px rgba(15,23,42,0.12);}
+        h1{margin:0 0 12px; color:#0f9d58;}
+        .badge{display:inline-block; padding:8px 12px; border-radius:12px; font-weight:700;}
+        .pending{background:#fff4e5; color:#c65a00;}
+        .ready{background:#e8f1ff; color:#1565c0;}
+        .completed{background:#e6f4ea; color:#0f9d58;}
+        .canceled{background:#fdecea; color:#c62828;}
+        ul{padding-right:18px;}
+        a.btn{display:inline-block; margin-top:14px; padding:10px 14px; background:#0f9d58; color:#fff; text-decoration:none; border-radius:10px; font-weight:700;}
+        @media(max-width:480px){
+            .wrap{ max-width: 100%; margin: 16px auto; padding: 16px; border-radius: 0; }
+            h1{ font-size: 1.3rem; }
+            p{ font-size: 0.95rem; margin: 8px 0; }
+            .badge{ padding: 6px 10px; font-size: 0.9rem; }
+            ul{ padding-right: 14px; font-size: 0.95rem; }
+            a.btn{ display: block; text-align: center; margin-top: 10px; padding: 12px; font-size: 0.95rem; }
+            .invoice-btn{ margin-left: 0 !important; margin-top: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>تتبع الطلب</h1>
+        <p><strong>رقم الطلب:</strong> {{ order.order_id }}</p>
+        <p>
+            <strong>الحالة:</strong>
+            {% set st = order.status %}
+            <span class="badge
+                {% if st=='مكتمل' %}completed{% elif st=='ملغي' %}canceled{% elif st=='جاهز للاستلام' %}ready{% else %}pending{% endif %}">
+                {{ order.status }}
+            </span>
+        </p>
+        <p><strong>الاسم:</strong> {{ order.name }}</p>
+        <p><strong>الهاتف:</strong> {{ order.phone }}</p>
+        <p><strong>المنتجات:</strong></p>
+        <ul>
+            {% for pid, item in order["items"].items() %}
+                <li>{{ item.name }} × {{ item.qty }}</li>
+            {% endfor %}
+        </ul>
+        <p><strong>الإجمالي:</strong> {{ order.total_price }} جنيه</p>
+        
+        {% if order.status == "مكتمل" %}
+        <a class="btn invoice-btn" href="/invoice/{{ order.order_id }}" style="background:#1565c0; margin-left:8px;">عرض الفاتورة</a>
+        {% endif %}
+        
+        <a class="btn" href="/">العودة للمتجر</a>
+        
+        {% if pharmacy %}
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 2px solid #e5e7eb;">
+            <h2 style="margin: 0 0 16px; color: #0f9d58; font-size: 1.1rem;">معلومات الصيدلية</h2>
+            {% if pharmacy.get('name') %}
+            <p style="margin: 8px 0; font-weight: 700; font-size: 1.05rem;">{{ pharmacy.name }}</p>
+            {% endif %}
+            {% if pharmacy.get('address') %}
+            <p style="margin: 8px 0; color: #6b7280; display: flex; align-items: center; gap: 8px;">
+                📍 {{ pharmacy.address }}
+            </p>
+            {% endif %}
+            {% if pharmacy.get('phone') %}
+            <p style="margin: 8px 0; color: #6b7280; display: flex; align-items: center; gap: 8px;">
+                📞 <a href="tel:{{ pharmacy.phone }}" style="color: #0f9d58; text-decoration: none; font-weight: 600;">{{ pharmacy.phone }}</a>
+            </p>
+            {% endif %}
+            {% if pharmacy.get('license') %}
+            <p style="margin: 8px 0; color: #6b7280; font-size: 0.9rem;">
+                <strong>ترخيص مهني:</strong> {{ pharmacy.license }}
+            </p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
+

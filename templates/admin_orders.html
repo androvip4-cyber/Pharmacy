@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الطلبات</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+        :root{
+            --bg:#f4f6fb;
+            --card:#ffffff;
+            --ink:#0f172a;
+            --muted:#6b7280;
+            --primary:#0f9d58;
+            --primary-2:#0b7d46;
+            --accent:#1976d2;
+            --danger:#c62828;
+            --shadow:0 8px 28px rgba(15,23,42,0.12);
+            --radius:14px;
+        }
+        *{box-sizing:border-box;}
+        body{margin:0; font-family:"Cairo",system-ui,sans-serif; background:var(--bg); color:var(--ink); direction:rtl;}
+        .layout{display:grid; grid-template-columns:240px 1fr; min-height:100vh;}
+        .sidebar{
+            background: linear-gradient(180deg,#0c5131,#0f9d58);
+            color:#fff;
+            padding:22px 18px;
+            display:flex;
+            flex-direction:column;
+            gap:16px;
+        }
+        .logo{font-weight:800; font-size:1.2rem;}
+        .nav a{
+            display:flex; align-items:center; gap:10px;
+            padding:10px 12px; color:#e0f2e9; text-decoration:none;
+            border-radius:10px; transition:all 160ms ease;
+        }
+        .nav a:hover{background:rgba(255,255,255,0.1); transform:translateX(-4px);}
+
+        .main{padding:20px 24px 32px;}
+        .page-head{display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; align-items:center;}
+        .page-head h1{margin:0; font-size:1.6rem; display:flex; gap:8px; align-items:center;}
+        .pill{background:#e8f5e9; color:var(--primary); padding:6px 10px; border-radius:999px; font-weight:700; font-size:0.9rem;}
+
+        .toolbar{display:flex; gap:10px; flex-wrap:wrap; margin:14px 0;}
+        .toolbar input, .toolbar select{
+            padding:10px 12px; border-radius:10px; border:1px solid #e5e7eb;
+            font-family:inherit; min-width:200px;
+        }
+        .toolbar select{min-width:160px;}
+        .btn{
+            background: linear-gradient(90deg,var(--primary),var(--primary-2));
+            color:#fff; padding:10px 14px; border:none; border-radius:10px;
+            font-weight:700; cursor:pointer; box-shadow:0 10px 24px rgba(15,157,88,0.2);
+        }
+        .btn-ghost{
+            background: transparent;
+            color: var(--primary);
+            border:1px dashed #c8e6c9;
+            box-shadow:none;
+        }
+
+        .card{
+            background:var(--card);
+            border-radius:var(--radius);
+            padding:16px;
+            box-shadow:var(--shadow);
+        }
+        .table-wrapper{width:100%; overflow-x:auto; border-radius:var(--radius); box-shadow:var(--shadow); background:var(--card);}
+        table{width:100%; border-collapse:collapse; min-width:820px;}
+        th,td{padding:12px; border-bottom:1px solid #e5e7eb; text-align:right;}
+        th{background:#0f9d58; color:#fff; position:sticky; top:0;}
+        tr:nth-child(even){background:#f9fafb;}
+        ul{margin:0; padding-right:18px;}
+        select{
+            padding:8px 10px; border-radius:8px; border:1px solid #d1d5db;
+            font-family:inherit;
+        }
+        .status-badge{
+            padding:6px 10px; border-radius:999px; font-weight:700; font-size:0.9rem;
+        }
+        .pending{background:#fff4e5; color:#c65a00;}
+        .completed{background:#e6f4ea; color:#0f9d58;}
+        .accent{background:#e8f1ff; color:#1565c0;}
+        .canceled{background:#fdecea; color:#c62828;}
+        a.invoice-link{
+            background: linear-gradient(90deg,#1565c0,#2196f3);
+            color:#fff; padding:8px 12px; border-radius:8px;
+            text-decoration:none; font-weight:700; display:inline-block;
+        }
+        .foot-actions{margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;}
+
+        @media(max-width:960px){
+            .layout{grid-template-columns:1fr;}
+            .sidebar{flex-direction:row; flex-wrap:wrap; align-items:center;}
+            table{min-width:720px;}
+        }
+        @media(max-width:620px){
+            table{min-width:640px;}
+        }
+        @media(max-width:480px){
+            .main{ padding: 12px 16px 20px; }
+            .page-head{ margin-bottom: 12px; }
+            .page-head h1{ font-size: 1.2rem; }
+            .pill{ font-size: 0.8rem; padding: 5px 8px; }
+            .toolbar{ flex-direction: column; gap: 8px; margin: 10px 0; }
+            .toolbar input, .toolbar select{ width: 100%; min-width: auto; padding: 10px; font-size: 0.95rem; }
+            .btn{ padding: 10px 14px; font-size: 0.95rem; width: 100%; }
+            .card{ padding: 12px; }
+            .card > div{ flex-direction: column; gap: 8px; font-size: 0.9rem; }
+            .table-wrapper{ border-radius: 10px; }
+            table{ min-width: 600px; font-size: 0.9rem; }
+            th, td{ padding: 8px 6px; }
+            th{ font-size: 0.85rem; }
+            .status-badge{ font-size: 0.8rem; padding: 5px 8px; }
+            select{ padding: 6px 8px; font-size: 0.85rem; }
+            .invoice-link{ padding: 6px 10px; font-size: 0.85rem; }
+            .sidebar{ padding: 16px 12px; gap: 12px; }
+            .logo{ font-size: 1rem; }
+            .nav a{ padding: 8px 10px; font-size: 0.9rem; }
+            .foot-actions{ margin-top: 12px; }
+            .foot-actions .btn{ width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="logo">🏥 Pharma Admin</div>
+            <div class="nav">
+                <a href="/admin/dashboard">📊 لوحة التحكم</a>
+                <a href="/admin/manual_order">➕ طلب يدوي</a>
+                <a href="/admin/stock_overview">📦 المخزون</a>
+                <a href="/admin/profits">💰 الأرباح</a>
+                <a href="/admin/logout">🚪 تسجيل الخروج</a>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="page-head">
+                <h1>إدارة الطلبات <span class="pill">متابعة و تحديث</span></h1>
+                <div class="toolbar">
+                    <input type="text" id="searchBox" placeholder="ابحث بالاسم أو ID...">
+                    <select id="statusFilter">
+                        <option value="all">كل الحالات</option>
+                        <option value="قيد الانتظار">قيد الانتظار</option>
+                        <option value="جاهز للاستلام">جاهز للاستلام</option>
+                        <option value="مكتمل">مكتمل</option>
+                        <option value="ملغي">ملغي</option>
+                    </select>
+                    <button class="btn btn-ghost" onclick="applyFilters()">تطبيق الفلتر</button>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom:14px;">
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <div><strong>إجمالي الطلبات:</strong> {{ orders|length }}</div>
+                    <div><strong>مكتملة:</strong> {{ orders|selectattr('status','equalto','مكتمل')|list|length }}</div>
+                    <div><strong>قيد الانتظار:</strong> {{ orders|selectattr('status','equalto','قيد الانتظار')|list|length }}</div>
+                    <div><strong>جاهز للاستلام:</strong> {{ orders|selectattr('status','equalto','جاهز للاستلام')|list|length }}</div>
+                    <div><strong>ملغية:</strong> {{ orders|selectattr('status','equalto','ملغي')|list|length }}</div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>الاسم</th>
+                            <th>الهاتف</th>
+                            <th>المنتجات</th>
+                            <th>الإجمالي</th>
+                            <th>الحالة</th>
+                            <th>الفاتورة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders|sort(attribute='status') %}
+                        <tr data-status="{{ order.status }}">
+                            <td>{{ order.order_id }}</td>
+                            <td>{{ order.name }}</td>
+                            <td>{{ order.phone }}</td>
+                            <td>
+                                <ul>
+                                {% for pid, item in order["items"].items() %}
+                                    <li>{{ item.name }} × {{ item.qty }}</li>
+                                {% endfor %}
+                                </ul>
+                            </td>
+                            <td>{{ order.total_price }} جنيه</td>
+                            <td>
+                                <div style="display:flex; flex-direction:column; gap:6px;">
+                                    <span class="status-badge {% if order.status=='قيد الانتظار' %}pending{% elif order.status=='مكتمل' %}completed{% elif order.status=='جاهز للاستلام' %}accent{% else %}canceled{% endif %}">
+                                        {{ order.status }}
+                                    </span>
+                                    <select onchange="updateStatus('{{ order.order_id }}', this.value)">
+                                        <option value="قيد الانتظار" {% if order.status == "قيد الانتظار" %}selected{% endif %}>قيد الانتظار</option>
+                                        <option value="جاهز للاستلام" {% if order.status == "جاهز للاستلام" %}selected{% endif %}>جاهز للاستلام</option>
+                                        <option value="مكتمل" {% if order.status == "مكتمل" %}selected{% endif %}>مكتمل</option>
+                                        <option value="ملغي" {% if order.status == "ملغي" %}selected{% endif %}>ملغي</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                {% if order.status == "مكتمل" %}
+                                    <a class="invoice-link" href="/invoice/{{ order.order_id }}">عرض الفاتورة</a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="foot-actions">
+                <a class="btn" href="/admin/dashboard">⬅️ رجوع للوحة الأدمن</a>
+            </div>
+        </main>
+    </div>
+
+<script>
+const searchBox = document.getElementById("searchBox");
+const statusFilter = document.getElementById("statusFilter");
+
+function applyFilters(){
+    const q = searchBox.value.toLowerCase();
+    const status = statusFilter.value;
+    const rows = document.querySelectorAll("#ordersTable tbody tr");
+
+    rows.forEach(row => {
+        const id = row.cells[0].innerText.toLowerCase();
+        const name = row.cells[1].innerText.toLowerCase();
+        const rowStatus = row.getAttribute("data-status");
+
+        const matchText = id.includes(q) || name.includes(q);
+        const matchStatus = status === "all" || rowStatus === status;
+        row.style.display = (matchText && matchStatus) ? "" : "none";
+    });
+}
+
+searchBox.addEventListener("input", applyFilters);
+statusFilter.addEventListener("change", applyFilters);
+
+function updateStatus(order_id, new_status) {
+    fetch(`/admin/update_order/${order_id}`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({status: new_status})
+    })
+    .then(res => res.text())
+    .then(() => {
+        // update badge + data-status without reload
+        const row = [...document.querySelectorAll("#ordersTable tbody tr")].find(r => r.cells[0].innerText === order_id);
+        if(row){
+            row.setAttribute("data-status", new_status);
+            const badge = row.querySelector(".status-badge");
+            badge.innerText = new_status;
+            const cls = new_status === "مكتمل" ? "completed" : new_status === "ملغي" ? "canceled" : new_status === "جاهز للاستلام" ? "accent" : "pending";
+            badge.className = "status-badge " + cls;
+            // show/hide invoice link
+            const invoiceCell = row.cells[6];
+            if(new_status === "مكتمل"){
+                invoiceCell.innerHTML = `<a class="invoice-link" href="/invoice/${order_id}">عرض الفاتورة</a>`;
+            } else {
+                invoiceCell.innerHTML = "-";
+            }
+        }
+        applyFilters();
+    })
+    .catch(() => alert("حدث خطأ أثناء الحفظ!"));
+}
+</script>
+
+</body>
+</html>
